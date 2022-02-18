@@ -1,6 +1,6 @@
-# week6
+# ChatKu
 
-A new Flutter project.
+Flutter project.
 
 ## Getting Started
 
