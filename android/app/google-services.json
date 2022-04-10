@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "79093497311",
+    "project_id": "chatku-53120",
+    "storage_bucket": "chatku-53120.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79093497311:android:988d145975172acf90986a",
+        "android_client_info": {
+          "package_name": "com.example.week6"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "79093497311-8t7s12e21veh77a38rniqmhnqinuk5ai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm-qqseKfclDW2txDKa4T-dSxoK6yC8VM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "79093497311-8t7s12e21veh77a38rniqmhnqinuk5ai.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

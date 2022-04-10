@@ -1,105 +1,90 @@
-import 'package:chatku/addFriend/addfriend.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
-class chatpage extends StatefulWidget {
-  String email;
-  chatpage({required this.email});
+class ChatPage extends StatefulWidget {
+  const ChatPage({Key? key}) : super(key: key);
+
   @override
-  _chatpageState createState() => _chatpageState(email: email);
+  _ChatPageState createState() => _ChatPageState();
 }
 
-class _chatpageState extends State<chatpage> {
-  String email;
-  _chatpageState({required this.email});
-
-  final fs = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
-  final TextEditingController message = new TextEditingController();
-
+class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'data',
+    return Container(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Paveena'),
         ),
-        actions: [
-          MaterialButton(
-            onPressed: () {
-              _auth.signOut().whenComplete(() {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyHomePage(),
-                  ),
-                );
-              });
-            },
-            child: Text(
-              "signOut",
-            ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.79,
-              child: messages(
-                email: email,
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: message,
+        body: Align(
+          alignment: Alignment.bottomCenter,
+          child: Row(
+            children: [
+              Expanded(
+                  child: TextField(
                     decoration: InputDecoration(
+                      hintText: 'Type a Message',
                       filled: true,
-                      fillColor: Colors.purple[100],
-                      hintText: 'message',
-                      enabled: true,
-                      contentPadding: const EdgeInsets.only(
-                          left: 14.0, bottom: 8.0, top: 8.0),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.purple),
-                        borderRadius: new BorderRadius.circular(10),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.purple),
-                        borderRadius: new BorderRadius.circular(10),
-                      ),
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: BorderSide.none,
+                      )
                     ),
-                    validator: (value) {},
-                    onSaved: (value) {
-                      message.text = value!;
-                    },
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    if (message.text.isNotEmpty) {
-                      fs.collection('Messages').doc().set({
-                        'message': message.text.trim(),
-                        'time': DateTime.now(),
-                        'email': email,
-                      });
-
-                      message.clear();
-                    }
-                  },
-                  icon: Icon(Icons.send_sharp),
-                ),
-              ],
-            ),
-          ],
+                  )
+              ),
+              IconButton(
+                icon: const Icon(Icons.send),
+                  color: Colors.teal,
+                  onPressed: () {},
+              ),
+            ]
+          ),
         ),
       ),
     );
   }
 }
+class ChatBubble extends StatelessWidget {
+  const ChatBubble({
+    Key? key,
+    required this.text,
+    required this.isCurrentUser,
+  }) : super(key: key);
+  final String text;
+  final bool isCurrentUser;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      // asymmetric padding
+      padding: EdgeInsets.fromLTRB(
+        isCurrentUser ? 64.0 : 16.0,
+        4,
+        isCurrentUser ? 16.0 : 64.0,
+        4,
+      ),
+      child: Align(
+        // align the child within the container
+        alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+        child: DecoratedBox(
+          // chat bubble decoration
+          decoration: BoxDecoration(
+            color: isCurrentUser ? Colors.blue : Colors.grey[300],
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  color: isCurrentUser ? Colors.white : Colors.black87),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+

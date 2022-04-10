@@ -1,8 +1,23 @@
+import 'package:chatku/login/email_login.dart';
+import 'package:chatku/addFriend/addfriend.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'contact.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'addFriend/contact.dart';
+// Import the generated file
+import 'addFriend/friendlist.dart';
+import 'firebase_options.dart';
+import 'chat/chat.dart';
+import 'navbar.dart';
 
-void main() {
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();  // flutter binding ensure initialized okay
+
+
+  await Firebase.initializeApp(   options: DefaultFirebaseOptions.currentPlatform,   );
   runApp(
     MultiProvider(
       providers: [
@@ -10,146 +25,45 @@ void main() {
           create: (context) => ContactModel(),
         ),
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }
 
+
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  // const MyApp({Key? key)} : super(key: key);
+
+  final _initialization = Firebase.initializeApp();   // don't want to restart entire widget of it
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-      ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => MyHomePage(),
-        '/second': (context) => SecondPage(),
-      },
+    return FutureBuilder(
+      future: _initialization,
+      builder: (context, snapshot) {
+        // in case this is not yet done initializing in case firebase
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Center(child: CircularProgressIndicator());
+        }
+        return MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.teal,
+          ),
+          // home: EmailLogin(),
+          initialRoute: '/',
+          routes: {
+            '/addfriend': (context) => MyHomePage(),
+            '/friend': (context) => SecondPage(),
+            '/chat': (context) => ChatPage(),
+            '/': (context) => EmailLogin(),
+          },
+        );
+      }
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Friend'),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            const Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: _ContactList(),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/second');
-              },
-              child: const Text('Friend'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
-class _ContactList extends StatelessWidget {
-  const _ContactList({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: Contact.member.length,
-      itemBuilder: (context, index) => Row(
-        children: [
-          _AddImg(contact: Contact.member[index].img),
-          _AddName(contact: Contact.member[index].name),
-          _AddButton(contact: Contact.member[index]),
-        ],
-      ),
-    );
-  }
-}
-class _AddImg extends StatelessWidget {
-  final String contact;
-  const _AddImg({required this.contact, Key? key }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(child:
-    Image.asset(
-    contact,
-      height: 30,
-    ));
-  }
-}
-
-class _AddName extends StatelessWidget {
-  final String contact;
-  const _AddName({required this.contact, Key? key }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(child: Text(contact));
-  }
-}
-
-class _AddButton extends StatelessWidget {
-  final Contact contact;
-  const _AddButton({required this.contact, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    var isAdded = context.select<ContactModel, bool>(
-          (contact) => contact.contact.contains(this.contact),
-    );
-    return TextButton(
-        onPressed: isAdded? null : () {
-          context.read<ContactModel>().addcontact(this.contact);
-        },
-        child: isAdded
-            ? const Icon(Icons.check, semanticLabel: 'ADDED')
-            : const Text('ADD'));
-  }
-}
-
-class SecondPage extends StatelessWidget {
-  const SecondPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    var contact = context.watch<ContactModel>();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Friend'),
-        backgroundColor: Colors.teal,
-      ),
-      body: Container(
-          child: ListView.builder(
-            itemCount: contact.contact.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(contact.contact[index].name),
-              trailing: IconButton(
-                icon: const Icon(Icons.remove_circle_outline),
-                onPressed: () {
-                  contact.removecontact(contact.contact[index]);
-                },
-              ),
-            ),
-          )),
-    );
-  }
-}
