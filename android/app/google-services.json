@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "79093497311",
-    "project_id": "chatku-53120",
-    "storage_bucket": "chatku-53120.appspot.com"
+    "project_number": "251257417337",
+    "project_id": "itcs424-chatku",
+    "storage_bucket": "itcs424-chatku.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:79093497311:android:988d145975172acf90986a",
+        "mobilesdk_app_id": "1:251257417337:android:8f5e05b2c06963cca26ea8",
         "android_client_info": {
-          "package_name": "com.example.week6"
+          "package_name": "com.example.chatapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "79093497311-8t7s12e21veh77a38rniqmhnqinuk5ai.apps.googleusercontent.com",
+          "client_id": "251257417337-4t41ivobkaa5krdr2tlu6gourdis8iom.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBm-qqseKfclDW2txDKa4T-dSxoK6yC8VM"
+          "current_key": "AIzaSyB4snw_BXnhgbiS9AvB8X5X4LmEsOY9zaU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "79093497311-8t7s12e21veh77a38rniqmhnqinuk5ai.apps.googleusercontent.com",
+              "client_id": "251257417337-4t41ivobkaa5krdr2tlu6gourdis8iom.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

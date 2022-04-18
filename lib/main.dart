@@ -1,69 +1,51 @@
-import 'package:chatku/login/email_login.dart';
-import 'package:chatku/addFriend/addfriend.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:chatapp/app.dart';
+import 'package:chatapp/screens/sign_in_screen.dart';
+import 'package:chatapp/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import 'addFriend/contact.dart';
-// Import the generated file
-import 'addFriend/friendlist.dart';
+import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'chat/chat.dart';
-import 'navbar.dart';
-
-
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();  // flutter binding ensure initialized okay
-
-
-  await Firebase.initializeApp(   options: DefaultFirebaseOptions.currentPlatform,   );
+  
+  final client = StreamChatClient(streamKey); // Stream core
+  WidgetsFlutterBinding.ensureInitialized(); // Firebase configure.
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => ContactModel(),
-        ),
-      ],
-      child: MyApp(),
+    MyApp(
+      streamChatClient: client,
+      appTheme: AppTheme(),
     ),
   );
 }
 
-
 class MyApp extends StatelessWidget {
-  // const MyApp({Key? key)} : super(key: key);
-
-  final _initialization = Firebase.initializeApp();   // don't want to restart entire widget of it
-
-  // This widget is the root of your application.
+  const MyApp({
+    Key? key,
+    required this.streamChatClient,
+    required this.appTheme,
+  }) : super(key: key);
+  final StreamChatClient streamChatClient;
+  final AppTheme appTheme;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initialization,
-      builder: (context, snapshot) {
-        // in case this is not yet done initializing in case firebase
-        if (snapshot.connectionState != ConnectionState.done) {
-          return Center(child: CircularProgressIndicator());
-        }
-        return MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.teal,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: appTheme.light,
+      darkTheme: appTheme.dark,
+      themeMode: ThemeMode.light,
+      title: 'ChatKu',
+      builder: (context, child) {
+        return StreamChatCore(
+          client: streamChatClient,
+          child: ChannelsBloc(
+            child: UsersBloc(child: child!),
           ),
-          // home: EmailLogin(),
-          initialRoute: '/',
-          routes: {
-            '/addfriend': (context) => MyHomePage(),
-            '/friend': (context) => SecondPage(),
-            '/chat': (context) => ChatPage(),
-            '/': (context) => EmailLogin(),
-          },
         );
-      }
+      },
+      home: const SignInScreen(),
     );
   }
 }
-
-
-
